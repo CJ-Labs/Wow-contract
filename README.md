@@ -54,10 +54,24 @@ forge test
 
 ```
 local
-forge script script/DeployScript.s.sol:DeployScript --fork-url http://localhost:8545 --broadcast -vvvv
+forge script script/DeployScript.s.sol:DeployScript --fork-url http://localhost:8545 --broadcast -vvvvv
 
 
-forge script script/DeployScript.s.sol:DeployScript --fork-url http://localhost:8545 --broadcast --verify -vvvv
+forge script script/DeployScript.s.sol:DeployScript --fork-url http://localhost:8545 --broadcast --verify -vvvvv
 
 ```
 
+
+## test
+
+```
+# 运行所有测试
+forge test -vvvvv
+
+# 运行特定测试（例如）
+forge test --match-test test_DeployCoin -vv
+
+# 查看测试覆盖率
+forge coverage
+
+```

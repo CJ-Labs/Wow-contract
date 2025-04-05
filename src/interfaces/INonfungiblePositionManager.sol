@@ -23,6 +23,20 @@ interface INonfungiblePositionManager {
         uint128 amount1Max;
     }
 
+    // 添加 Position 结构体定义
+    struct Position {
+        uint96 nonce;
+        address operator;
+        address poolId;      // 池子地址
+        int24 tickLower;     // 价格区间下限
+        int24 tickUpper;     // 价格区间上限
+        uint128 liquidity;   // 流动性数量
+        uint256 feeGrowthInside0LastX128;  // token0 的累计手续费
+        uint256 feeGrowthInside1LastX128;  // token1 的累计手续费
+        uint128 tokensOwed0; // 待领取的 token0 数量
+        uint128 tokensOwed1; // 待领取的 token1 数量
+    }
+
     /// @notice Creates a new pool if it does not exist, then initializes if not initialized
     /// @dev This method can be bundled with others via IMulticall for the first action (e.g. mint) performed against a pool
     /// @param token0 The contract address of token0 of the pool
