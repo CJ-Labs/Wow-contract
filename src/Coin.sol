@@ -3,9 +3,9 @@ pragma solidity ^0.8.23;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import {Initializable} from "@openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
+import {ERC20Upgradeable} from "@openzeppelin-contracts-upgradeable/contracts/token/ERC20/ERC20Upgradeable.sol";
+import {ReentrancyGuardUpgradeable} from "@openzeppelin-contracts-upgradeable/contracts/utils/ReentrancyGuardUpgradeable.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import {TickMath} from "./TickMath.sol";
@@ -43,7 +43,7 @@ contract Coin is ICoin, ERC20Upgradeable, ReentrancyGuardUpgradeable, IERC721Rec
     uint256 internal constant PLATFORM_REFERRER_SECONDARY_REWARDS_BPS = 2500; // 25% (of LP_FEE)
 
     uint24 internal constant LP_FEE = 10000;
-    int24 internal constant LP_TICK_LOWER = -219200;
+    int24 internal constant LP_TICK_LOWER = - 219200;
     int24 internal constant LP_TICK_UPPER = 887200;
 
     address public immutable WETH;
@@ -262,7 +262,7 @@ contract Coin is ICoin, ERC20Upgradeable, ReentrancyGuardUpgradeable, IERC721Rec
         _disperseFees(fee, orderReferrer);
 
         // Send the payout to the recipient
-        (bool success, ) = recipient.call{value: payoutAfterFee}("");
+        (bool success,) = recipient.call{value: payoutAfterFee}("");
         if (!success) revert EthTransferFailed();
 
         // Handle any secondary rewards
@@ -360,8 +360,8 @@ contract Coin is ICoin, ERC20Upgradeable, ReentrancyGuardUpgradeable, IERC721Rec
         bool isCoinToken0 = token0 == address(this);
 
         // Determine the tick values
-        int24 tickLower = isCoinToken0 ? LP_TICK_LOWER : -LP_TICK_UPPER;
-        int24 tickUpper = isCoinToken0 ? LP_TICK_UPPER : -LP_TICK_LOWER;
+        int24 tickLower = isCoinToken0 ? LP_TICK_LOWER : - LP_TICK_UPPER;
+        int24 tickUpper = isCoinToken0 ? LP_TICK_UPPER : - LP_TICK_LOWER;
 
         // Calculate the starting price for the pool
         uint160 sqrtPriceX96 = TickMath.getSqrtRatioAtTick(isCoinToken0 ? tickLower : tickUpper);
@@ -468,7 +468,7 @@ contract Coin is ICoin, ERC20Upgradeable, ReentrancyGuardUpgradeable, IERC721Rec
             orderReferrerFee,
             protocolFee
         );
-    
+
         emit CoinTradeRewards(
             tokenCreator,
             platformReferrer,

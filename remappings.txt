@@ -1,6 +1,5 @@
-@openzeppelin/=lib/openzeppelin-contracts/
-@openzeppelin-upgrades/=lib/openzeppelin-contracts-upgradeable/
 forge-std/=lib/forge-std/src/
-@/=src/
-@script/=script/
-@test/=test/
+@openzeppelin/=lib/openzeppelin-contracts/
+@openzeppelin-contracts/=lib/openzeppelin-contracts/
+@openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/
+@solmate-token/=lib/solmate/src/tokens/

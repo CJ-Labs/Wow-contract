@@ -1,66 +1,63 @@
-## Foundry
+<!--
+parent:
+  order: false
+-->
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+<div align="center">
+  <h1> Fishcake Contracts Repo</h1>
+</div>
 
-Foundry consists of:
+<div align="center">
+  <a href="https://github.com/FishcakeLab/fishcake-contracts/releases/latest">
+    <img alt="Version" src="https://img.shields.io/github/tag/FishcakeLab/fishcake-contracts.svg" />
+  </a>
+  <a href="https://github.com/FishcakeLab/fishcake-contracts/blob/main/LICENSE">
+    <img alt="License: Apache-2.0" src="https://img.shields.io/github/license/FishcakeLab/fishcake-contracts.svg" />
+  </a>
+</div>
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+Fishcake Contracts Project
 
-## Documentation
+## Installation
 
-https://book.getfoundry.sh/
+For prerequisites and detailed build instructions please read the [Installation](https://github.com/FishcakeLab/fishcake-contracts/) instructions. Once the dependencies are installed, run:
 
-## Usage
+```bash
+git submodule update --init --recursive --remote
+```
+or
+```bash
+forge install foundry-rs/forge-std --no-commit
+forge install OpenZeppelin/openzeppelin-contracts-upgradeable --no-commit
+forge install OpenZeppelin/openzeppelin-contracts --no-commit
+forge install OpenZeppelin/openzeppelin-foundry-upgrades --no-commit
+forge install transmissions11/solmate --no-commit
 
-### Build
-
-```shell
-$ forge build
 ```
 
-### Test
+Or check out the latest [release](https://github.com/FishcakeLab/fishcake-contracts).
 
-```shell
-$ forge test
+
+## .env
+```
+PRIVATE_KEY=your_private_key_here
+ETHERSCAN_API_KEY=your_etherscan_api_key_here
 ```
 
-### Format
 
-```shell
-$ forge fmt
+## test
+```
+forge test 
 ```
 
-### Gas Snapshots
+## Depoly
 
-```shell
-$ forge snapshot
+```
+local
+forge script script/DeployScript.s.sol:DeployScript --fork-url http://localhost:8545 --broadcast -vvvv
+
+
+forge script script/DeployScript.s.sol:DeployScript --fork-url http://localhost:8545 --broadcast --verify -vvvv
+
 ```
 
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
