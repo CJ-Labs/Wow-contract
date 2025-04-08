@@ -1,28 +1,19 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.23;
 
-/* 
-    !!!         !!!         !!!    
-    !!!         !!!         !!!    
-    !!!         !!!         !!!    
-    !!!         !!!         !!!    
-    !!!         !!!         !!!    
-    !!!         !!!         !!!    
-
-    WOW         WOW         WOW    
-*/
+// WowFactory 接口定义
 interface IWowFactory {
-    /// @notice Emitted when a new Wow token is created
-    /// @param factoryAddress The address of the factory that created the token
-    /// @param creator The address of the creator of the token
-    /// @param platformReferrer The address of the platform referrer
-    /// @param protocolFeeRecipient The address of the protocol fee recipient
-    /// @param bondingCurve The address of the bonding curve
-    /// @param tokenURI The URI of the token
-    /// @param name The name of the token
-    /// @param symbol The symbol of the token
-    /// @param tokenAddress The address of the token
-    /// @param poolAddress The address of the pool
+    /// @notice 当新的 Wow 代币被创建时发出的事件
+    /// @param factoryAddress 创建代币的工厂合约地址
+    /// @param creator 代币创建者的地址
+    /// @param platformReferrer 平台推荐人的地址
+    /// @param protocolFeeRecipient 协议费用接收者的地址
+    /// @param bondingCurve 绑定曲线合约的地址
+    /// @param tokenURI 代币的 URI
+    /// @param name 代币名称
+    /// @param symbol 代币符号
+    /// @param tokenAddress 代币合约地址
+    /// @param poolAddress 流动性池合约地址
     event WowTokenCreated(
         address indexed factoryAddress,
         address indexed creator,
@@ -36,17 +27,17 @@ interface IWowFactory {
         address poolAddress
     );
 
-    /// @notice Emitted when a coin is created
-    /// @param deployer The msg.sender address of coin creation
-    /// @param creator The address of the creator of the coin
-    /// @param creatorPayoutRecipient The address of the creator payout recipient
-    /// @param platformReferrer The address of the platform referrer
-    /// @param currency The address of the currency
-    /// @param tokenURI The URI of the coin
-    /// @param name The name of the coin
-    /// @param symbol The symbol of the coin
-    /// @param coin The address of the coin
-    /// @param pool The address of the pool
+    /// @notice 当新的 Coin 被创建时发出的事件
+    /// @param deployer 创建 Coin 的 msg.sender 地址
+    /// @param creator Coin 创建者的地址
+    /// @param creatorPayoutRecipient 创建者收益接收者的地址
+    /// @param platformReferrer 平台推荐人的地址
+    /// @param currency Coin 的货币地址
+    /// @param tokenURI Coin 的 URI
+    /// @param name Coin 的名称
+    /// @param symbol Coin 的符号
+    /// @param coin Coin 的合约地址
+    /// @param pool 流动性池合约地址
     event CoinCreated(
         address indexed deployer,
         address indexed creator,
@@ -60,12 +51,12 @@ interface IWowFactory {
         address pool
     );
 
-    /// @notice Deploys a coin
-    /// @param _creator The address of the token creator
-    /// @param _platformReferrer The address of the platform referrer
-    /// @param _tokenURI The ERC20z token URI
-    /// @param _name The ERC20 token name
-    /// @param _symbol The ERC20 token symbol
+    /// @notice 部署一个 Coin
+    /// @param _creator 代币创建者的地址
+    /// @param _platformReferrer 平台推荐人的地址
+    /// @param _tokenURI ERC20z 代币的 URI
+    /// @param _name ERC20 代币的名称
+    /// @param _symbol ERC20 代币的符号
     function deploy(
         address _creator,
         address _platformReferrer,

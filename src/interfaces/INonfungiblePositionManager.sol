@@ -2,90 +2,88 @@
 pragma solidity ^0.8.0;
 
 interface INonfungiblePositionManager {
+    // 铸造新头寸所需的参数结构
     struct MintParams {
-        address token0;
-        address token1;
-        uint24 fee;
-        int24 tickLower;
-        int24 tickUpper;
-        uint256 amount0Desired;
-        uint256 amount1Desired;
-        uint256 amount0Min;
-        uint256 amount1Min;
-        address recipient;
-        uint256 deadline;
+        address token0;        // 第一个代币的地址
+        address token1;        // 第二个代币的地址
+        uint24 fee;           // 交易手续费比例
+        int24 tickLower;      // 价格范围下限
+        int24 tickUpper;      // 价格范围上限
+        uint256 amount0Desired;  // 期望存入的 token0 数量
+        uint256 amount1Desired;  // 期望存入的 token1 数量
+        uint256 amount0Min;    // 最少接受的 token0 数量
+        uint256 amount1Min;    // 最少接受的 token1 数量
+        address recipient;     // 接收 NFT 的地址
+        uint256 deadline;      // 交易截止时间
     }
 
+    // 收取手续费的参数结构
     struct CollectParams {
-        uint256 tokenId;
-        address recipient;
-        uint128 amount0Max;
-        uint128 amount1Max;
+        uint256 tokenId;      // NFT 的 ID
+        address recipient;     // 接收手续费的地址
+        uint128 amount0Max;   // 最大收取的 token0 数量
+        uint128 amount1Max;   // 最大收取的 token1 数量
     }
 
-    // 添加 Position 结构体定义
+    // 头寸信息结构体
     struct Position {
-        uint96 nonce;
-        address operator;
-        address poolId;      // 池子地址
-        int24 tickLower;     // 价格区间下限
-        int24 tickUpper;     // 价格区间上限
-        uint128 liquidity;   // 流动性数量
+        uint96 nonce;         // 用于许可的随机数
+        address operator;     // 操作者地址
+        address poolId;       // 池子地址
+        int24 tickLower;      // 价格区间下限
+        int24 tickUpper;      // 价格区间上限
+        uint128 liquidity;    // 流动性数量
         uint256 feeGrowthInside0LastX128;  // token0 的累计手续费
         uint256 feeGrowthInside1LastX128;  // token1 的累计手续费
-        uint128 tokensOwed0; // 待领取的 token0 数量
-        uint128 tokensOwed1; // 待领取的 token1 数量
+        uint128 tokensOwed0;  // 待领取的 token0 数量
+        uint128 tokensOwed1;  // 待领取的 token1 数量
     }
 
-    /// @notice Creates a new pool if it does not exist, then initializes if not initialized
-    /// @dev This method can be bundled with others via IMulticall for the first action (e.g. mint) performed against a pool
-    /// @param token0 The contract address of token0 of the pool
-    /// @param token1 The contract address of token1 of the pool
-    /// @param fee The fee amount of the v3 pool for the specified token pair
-    /// @param sqrtPriceX96 The initial square root price of the pool as a Q64.96 value
-    /// @return pool Returns the pool address based on the pair of tokens and fee, will return the newly created pool address if necessary
+    /// @notice 创建池子，如果池子不存在则创建并初始化
+    /// @dev 此方法可以与其他方法通过 IMulticall 组合使用，用于对池子的首次操作（例如铸造）
+    /// @param token0 池子的第一个代币的合约地址
+    /// @param token1 池子的第二个代币的合约地址
+    /// @param fee 指定代币对的 v3 池的手续费比例
+    /// @param sqrtPriceX96 池子的初始平方根价格，作为 Q64.96 值
+    /// @return pool 返回基于代币对和手续费的池子地址，如果需要会返回新创建的池子地址
     function createAndInitializePoolIfNecessary(address token0, address token1, uint24 fee, uint160 sqrtPriceX96)
         external
         payable
         returns (address pool);
 
-    /// @notice Creates a new position wrapped in a NFT
-    /// @dev Call this when the pool does exist and is initialized. Note that if the pool is created but not initialized
-    /// a method does not exist, i.e. the pool is assumed to be initialized.
-    /// @param params The params necessary to mint a position, encoded as `MintParams` in calldata
-    /// @return tokenId The ID of the token that represents the minted position
-    /// @return liquidity The amount of liquidity for this position
-    /// @return amount0 The amount of token0
-    /// @return amount1 The amount of token1
+    /// @notice 创建头寸并铸造 NFT
+    /// @dev 调用此函数时需确保池子已存在并已初始化
+    /// @param params 铸造头寸所需的参数，使用 MintParams 结构编码
+    /// @return tokenId 代表铸造头寸的 NFT 的 ID
+    /// @return liquidity 该头寸的流动性数量
+    /// @return amount0 实际存入的 token0 数量
+    /// @return amount1 实际存入的 token1 数量
     function mint(MintParams calldata params)
         external
         payable
         returns (uint256 tokenId, uint128 liquidity, uint256 amount0, uint256 amount1);
 
-    /// @notice Collects up to a maximum amount of fees owed to a specific position to the recipient
-    /// @param params tokenId The ID of the NFT for which tokens are being collected,
-    /// recipient The account that should receive the tokens,
-    /// amount0Max The maximum amount of token0 to collect,
-    /// amount1Max The maximum amount of token1 to collect
-    /// @return amount0 The amount of fees collected in token0
-    /// @return amount1 The amount of fees collected in token1
+    /// @notice 为指定的头寸收取手续费
+    /// @param params 包含 NFT ID、接收地址和最大收取数量的参数
+    /// @return amount0 收取的 token0 数量
+    /// @return amount1 收取的 token1 数量
     function collect(CollectParams calldata params) external payable returns (uint256 amount0, uint256 amount1);
 
-    /// @notice Returns the position information associated with a given token ID.
-    /// @dev Throws if the token ID is not valid.
-    /// @param tokenId The ID of the token that represents the position
-    /// @return nonce The nonce for permits
-    /// @return operator The address that is approved for spending
-    /// @return token0 The address of the token0 for a specific pool
-    /// @return token1 The address of the token1 for a specific pool
-    /// @return fee The fee associated with the pool
-    /// @return tickLower The lower end of the tick range for the position
-    /// @return tickUpper The higher end of the tick range for the position
-    /// @return liquidity The liquidity of the position
-    /// @return feeGrowthInside0LastX128 The fee growth of token0 as of the last action on the individual position
-    /// @return feeGrowthInside1LastX128 The fee growth of token1 as of the last action on the individual position
-    /// @return tokensOwed0 The uncollected amount of token0 owed to the position as of the last computation
-    /// @return tokensOwed1 The uncollected amount of token1 owed to the position as of the last computation
+    /// @notice 返回与给定 token ID 关联的头寸信息
+    /// @dev 如果 token ID 无效则抛出异常
+    /// @param tokenId 代表头寸的 token ID
+    /// @return nonce 用于许可的随机数
+    /// @return operator 被批准的操作者地址
+    /// @return token0 特定池子的 token0 地址
+    /// @return token1 特定池子的 token1 地址
+    /// @return fee 池子关联的手续费比例
+    /// @return tickLower 头寸的价格范围下限
+    /// @return tickUpper 头寸的价格范围上限
+    /// @return liquidity 头寸的流动性数量
+    /// @return feeGrowthInside0LastX128 头寸最后一次操作时 token0 的累计手续费增长
+    /// @return feeGrowthInside1LastX128 头寸最后一次操作时 token1 的累计手续费增长
+    /// @return tokensOwed0 头寸最后一次计算时未领取的 token0 数量
+    /// @return tokensOwed1 头寸最后一次计算时未领取的 token1 数量
     function positions(uint256 tokenId)
         external
         view
@@ -112,11 +110,11 @@ interface INonfungiblePositionManager {
 
     function safeTransferFrom(address from, address to, uint256 tokenId, bytes calldata data) external;
 
-    /// @notice Emitted when tokens are collected for a position NFT
-    /// @dev The amounts reported may not be exactly equivalent to the amounts transferred, due to rounding behavior
-    /// @param tokenId The ID of the token for which underlying tokens were collected
-    /// @param recipient The address of the account that received the collected tokens
-    /// @param amount0 The amount of token0 owed to the position that was collected
-    /// @param amount1 The amount of token1 owed to the position that was collected
+    /// @notice NFT 所有权转移事件
+    /// @dev 由于四舍五入，报告的数量可能与实际转移的数量不完全相等
+    /// @param tokenId 收取手续费的 NFT ID
+    /// @param recipient 接收手续费的地址
+    /// @param amount0 收取的 token0 数量
+    /// @param amount1 收取的 token1 数量
     event Collect(uint256 indexed tokenId, address recipient, uint256 amount0, uint256 amount1);
 }
